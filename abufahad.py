@@ -1,5 +1,4 @@
 import streamlit as st 
-import streamlit as st
 import ccxt
 # import config
 from datetime import datetime
