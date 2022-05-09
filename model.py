@@ -1,12 +1,11 @@
 import streamlit as st
 import ccxt
 import sqlite3
-import config
 import time
 
 exchange = ccxt.binance({
-    "apiKey": config.api_key, #st.session_state['api_key'],
-   "secret":config.api_secret, #st.session_state['secret'],
+    "apiKey": st.session_state['api_key'],
+   "secret": st.session_state['secret'],
    "enableRateLimit": True,
 })
 
@@ -60,53 +59,6 @@ def get_all_symbols():
         data = [x[0] for x in cur.fetchall() if x[0] != "USDT"]
         return data
 
-# def get_selected_symbols(position):
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         cur.execute(f"SELECT symbol FROM symbols WHERE selected_{position} = 1")
-#         data = [x[0] for x in cur.fetchall() if x[0] != "USDT"]
-#         return data
-
-# def check_if_selected(symbol,position):
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         cur.execute(f"SELECT selected_{position} FROM symbols WHERE symbol = '{symbol}'")
-#         data = cur.fetchall()[0][0]
-#         if data == 0:
-#             return False
-#         else:
-#             return True
-
-# def update_selected_symbol(symbol,position):
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         cur.execute(f"UPDATE symbols SET selected_{position} = CASE WHEN selected_{position} > 0 THEN 0 ELSE 1 END WHERE symbol='{symbol}'")
-#         con.commit()
-
-# def update_all_symbols(position,select):
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         if select:
-#             cur.execute(f"UPDATE symbols SET selected_{position} = 1")
-#         else:
-#             cur.execute(f"UPDATE symbols SET selected_{position} = 0")
-#         con.commit()
-
-# def unselect_all_sell():
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         cur.execute("UPDATE symbols SET selected_sell = 0")
-#         con.commit()
-
-# def customise_all_symbols(coin_dict,position):
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         for key,value in coin_dict.items():
-#             if value:
-#                 cur.execute(f"UPDATE symbols SET selected_{position} = 1 WHERE symbol = '{key}'")
-#             else:
-#                 cur.execute(f"UPDATE symbols SET selected_{position} = 0 WHERE symbol = '{key}'")
-#         con.commit()
 
 def check_usdt_balance():
     with sqlite3.connect("data.db") as con:
@@ -177,13 +129,6 @@ def update_price(symbol):
             cur = con.cursor()
             cur.execute(f"UPDATE symbols SET last_price = {last_price} WHERE symbol = '{symbol}'")
             con.commit()
-
-# def get_selected_symbols(position):
-#     with sqlite3.connect("data.db") as con:
-#         cur = con.cursor()
-#         cur.execute(f"SELECT symbol FROM symbols WHERE selected_{position} = 1")
-#         data = [x[0] for x in cur.fetchall() if x[0] != "USDT"]
-#         return data
 
 def update_after_sell(symbol,gained,volume_reduction):
     with sqlite3.connect("data.db") as con:
